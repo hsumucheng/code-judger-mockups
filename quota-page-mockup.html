@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>課程 AI 額度管理 — 模擬頁面</title>
+<style>
+  :root {
+    --navy: #2b3245;
+    --navy-dark: #232939;
+    --navy-darker: #1c2130;
+    --teal: #22b8c8;
+    --orange: #f0984e;
+    --green: #6bbf6b;
+    --pink: #ef7e8b;
+    --amber-text: #e8a33d;
+    --text-main: #2b3245;
+    --text-muted: #8a8f9c;
+    --border: #e6e8ec;
+    --page-bg: #f4f5f7;
+    --row-hover: #f8f9fb;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    font-family: "Noto Sans TC", "Microsoft JhengHei", -apple-system, sans-serif;
+    color: var(--text-main);
+  }
+
+  /* ---------- top navbar ---------- */
+  .navbar {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+  }
+
+  .brand-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .brand-title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: #9aa0b0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    font-size: 14px;
+    color: #c7cad3;
+  }
+
+  .nav-links a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .nav-links .active {
+    color: var(--amber-text);
+    font-weight: 700;
+  }
+
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 13px;
+  }
+
+  /* ---------- page header bar ---------- */
+  .page-header {
+    background: var(--navy-dark);
+    padding: 14px 28px 22px;
+  }
+
+  .back-link {
+    color: #b7bac4;
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .page-title {
+    color: #fff;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 8px 0 0;
+  }
+
+  /* ---------- content ---------- */
+  .content {
+    padding: 24px 28px 48px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  /* metric cards */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .metric-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 2px rgba(43, 50, 69, 0.04);
+  }
+
+  .metric-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+
+  .metric-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.3px;
+  }
+
+  .metric-unit {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  .metric-footer {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .metric-bar-track {
+    height: 4px;
+    background: var(--page-bg);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .metric-bar-fill { height: 100%; border-radius: 2px; }
+
+  .metric-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .metric-footer-text { font-size: 12px; color: var(--text-muted); }
+  .metric-percent { font-size: 12px; font-weight: 700; }
+
+  .card-total .metric-bar-fill { background: var(--navy); width: 100%; }
+  .card-total .metric-percent { color: var(--navy); }
+
+  .card-allocated .metric-value { color: var(--teal); }
+  .card-allocated .metric-bar-fill { background: var(--teal); }
+  .card-allocated .metric-percent { color: var(--teal); }
+
+  .card-unallocated .metric-bar-fill { background: var(--orange); }
+  .card-unallocated .metric-percent { color: var(--orange); }
+
+  /* search */
+  .search-box {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  /* controls row */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .page-size-btn {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .page-size-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .page-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: #fff;
+  }
+
+  .page-num.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+    font-weight: 700;
+  }
+
+  .page-arrow {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 0 4px;
+  }
+
+  /* table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .data-table th {
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 700;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--row-hover); }
+
+  .sort-arrow { color: #c2c5cc; font-size: 11px; margin-left: 2px; }
+
+  /* toggle switch */
+  .toggle {
+    width: 38px;
+    height: 20px;
+    border-radius: 10px;
+    background: #dcdfe4;
+    position: relative;
+    display: inline-block;
+  }
+
+  .toggle::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  .toggle.on {
+    background: var(--teal);
+  }
+
+  .toggle.on::after {
+    left: 20px;
+  }
+
+  /* action buttons */
+  .btn {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 6px;
+  }
+
+  .btn-allocate { background: var(--green); }
+  .btn-reclaim { background: var(--pink); }
+  .btn-history { background: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="brand">
+    <div class="brand-icon">CJ</div>
+    <div class="brand-text">
+      <span class="brand-title">CODE JUDGER</span>
+      <span class="brand-sub">目前所在 BU：TQC+</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active">教學專區</a>
+    <a href="#">我的課程</a>
+    <a href="#">教師主控臺 ▾</a>
+    <a href="#">單位管理主控臺 ▾</a>
+    <a href="#">系統管理主控臺 ▾</a>
+    <a href="#">站內信 ▾</a>
+    <div class="nav-icon">許</div>
+    <a href="#">許慕城 ▾</a>
+    <a href="#">⚙</a>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="#" class="back-link">← 返回課程列表</a>
+  <h1 class="page-title">課程 AI 額度管理</h1>
+</div>
+
+<div class="content">
+
+  <div class="cards-row">
+    <div class="metric-card card-total">
+      <p class="metric-label">總額度</p>
+      <p class="metric-value">100,014,202<span class="metric-unit">Token</span></p>
+      <div class="metric-footer">
+        <div class="metric-bar-track"><div class="metric-bar-fill"></div></div>
+        <div class="metric-footer-row">
+          <span class="metric-footer-text">全部容量</span>
+          <span class="metric-percent">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card card-allocated">
+      <p class="metric-label">已分配額度</p>
+      <p class="metric-value">56,201<span class="metric-unit">Token</span></p>
+      <div class="metric-footer">
+        <div class="metric-bar-track"><div class="metric-bar-fill" style="width: 0.6%;"></div></div>
+        <div class="metric-footer-row">
+          <span class="metric-footer-text">佔總額度比例</span>
+          <span class="metric-percent">0.06%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card card-unallocated">
+      <p class="metric-label">未分配額度</p>
+      <p class="metric-value">99,958,001<span class="metric-unit">Token</span></p>
+      <div class="metric-footer">
+        <div class="metric-bar-track"><div class="metric-bar-fill" style="width: 99.4%;"></div></div>
+        <div class="metric-footer-row">
+          <span class="metric-footer-text">佔總額度比例</span>
+          <span class="metric-percent">99.94%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input class="search-box" placeholder="Search" />
+
+  <div class="controls-row">
+    <div style="display:flex; align-items:center;">
+      <button class="page-size-btn">25 ▾</button>
+      <span class="page-size-label">每頁顯示</span>
+    </div>
+    <div class="pagination">
+      <div class="page-num active">1</div>
+      <div class="page-num">2</div>
+      <div class="page-num">3</div>
+      <div class="page-num">4</div>
+      <div class="page-num">5</div>
+      <span class="page-arrow">&gt;</span>
+      <span class="page-arrow">&gt;&gt;</span>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>課程名稱 <span class="sort-arrow">↑↓</span></th>
+        <th>課程結束日 <span class="sort-arrow">↑↓</span></th>
+        <th>教師 <span class="sort-arrow">↑↓</span></th>
+        <th>AI 導師 <span class="sort-arrow">↑↓</span></th>
+        <th>分配額度 <span class="sort-arrow">↑↓</span></th>
+        <th>已使用 <span class="sort-arrow">↑↓</span></th>
+        <th>未使用 <span class="sort-arrow">↑↓</span></th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Python測試班</td>
+        <td>2194-07-16</td>
+        <td>irene</td>
+        <td><span class="toggle"></span></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><button class="btn btn-history">異動歷程</button></td>
+      </tr>
+      <tr>
+        <td>研習教室1</td>
+        <td>2194-07-16</td>
+        <td>CSF 學員一</td>
+        <td><span class="toggle on"></span></td>
+        <td>10,000</td>
+        <td>0</td>
+        <td>10,000</td>
+        <td>
+          <button class="btn btn-allocate">分配</button>
+          <button class="btn btn-reclaim">回收</button>
+          <button class="btn btn-history">異動歷程</button>
+        </td>
+      </tr>
+      <tr>
+        <td>CSF教師研習會一</td>
+        <td>2194-07-16</td>
+        <td>CSF Teacher</td>
+        <td><span class="toggle"></span></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><button class="btn btn-history">異動歷程</button></td>
+      </tr>
+      <tr>
+        <td>玄奘大學</td>
+        <td>2194-07-16</td>
+        <td>楊權輝</td>
+        <td><span class="toggle"></span></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><button class="btn btn-history">異動歷程</button></td>
+      </tr>
+      <tr>
+        <td>中華科技大學</td>
+        <td>2194-07-16</td>
+        <td>劉育君</td>
+        <td><span class="toggle"></span></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><button class="btn btn-history">異動歷程</button></td>
+      </tr>
+      <tr>
+        <td>中華科技大學</td>
+        <td>2194-07-16</td>
+        <td>劉育君</td>
+        <td><span class="toggle"></span></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><button class="btn btn-history">異動歷程</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+</body>
+</html>
